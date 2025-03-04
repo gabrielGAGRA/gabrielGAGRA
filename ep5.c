@@ -1,31 +1,3 @@
-/*
- \__\__\__\__\__\__\__\__\__\__\__\__\__\__\__\__\__\__\__\__\__\__\__
-
-  AO PREENCHER ESSE CABEÇALHO COM O MEU NOME E O MEU NÚMERO USP,
-  DECLARO QUE SOU O ÚNICO AUTOR E RESPONSÁVEL POR ESSE PROGRAMA.
-  TODAS AS PARTES ORIGINAIS DESSE EXERCÍCIO-PROGRAMA (EP) FORAM
-  DESENVOLVIDAS E IMPLEMENTADAS POR MIM SEGUINDO AS INSTRUÇÕES DESSE EP
-  E QUE PORTANTO NÃO CONSTITUEM PLÁGIO. DECLARO TAMBÉM QUE SOU RESPONSÁVEL
-  POR TODAS AS CÓPIAS DESSE PROGRAMA E QUE EU NÃO DISTRIBUI OU FACILITEI A
-  SUA DISTRIBUIÇÃO. ESTOU CIENTE QUE OS CASOS DE PLÁGIO SÃO PUNIDOS COM
-  REPROVAÇÃO DIRETA NA DISCIPLINA.
-
-  Nome: Gabriel Agra de Castro Motta
-  NUSP: 15452743
-
-  ep5.c
-
-  Referências: Com exceção das rotinas fornecidas no esqueleto e em sala
-  de aula, caso você tenha utilizado alguma referência, liste-as abaixo
-  para que o seu programa não seja considerada plágio.
-
-  - funcao mallocsafe adaptada de:
-       https://www.ime.usp.br/~coelho/mac0122-2014/aulas/aula06-3x2.pdf
-  - funcao quicksort e separa adaptadas de:
-       https://www.ime.usp.br/~cris/mac0122/slides/aula17.pdf
- \__\__\__\__\__\__\__\__\__\__\__\__\__\__\__\__\__\__\__\__\__\__\__
-*/
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
