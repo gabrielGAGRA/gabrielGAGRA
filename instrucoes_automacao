@@ -1,0 +1,124 @@
+# Accessing Google Sheets Directly Instead of Downloading Excel
+
+Yes, you can access Google Sheets directly without downloading the file each time. Since the sheet is only visible to organization members, you'll need to use a service account for authentication. Here's how to set it up:
+
+## Step 1: Create a Service Account
+
+1. Go to [Google Cloud Console](https://console.cloud.google.com/)
+2. Create a new project (or use an existing one)
+3. Enable the Google Sheets API
+4. Create a service account:
+   - Go to "IAM & Admin" > "Service Accounts"
+   - Click "Create Service Account"
+   - Give it a name and description
+   - Click "Create and Continue"
+   - Grant necessary roles (Viewer is sufficient for read-only)
+   - Click "Done"
+5. Create a key for the service account:
+   - Click on the service account
+   - Go to "Keys" tab
+   - Add a new key (JSON format)
+   - Download the JSON file (keep this secure!)
+
+## Step 2: Share Your Google Sheet with the Service Account
+
+1. Copy the service account email (looks like `name@project-id.iam.gserviceaccount.com`)
+2. Open your Google Sheet
+3. Click "Share"
+4. Add the service account email
+5. Set appropriate permissions (Viewer is sufficient for read-only access)
+
+## Step 3: Install Required Libraries
+pip install gspread oauth2client pandas
+
+## Step 4: Python Code to Access the Sheet
+import gspread
+from oauth2client.service_account import ServiceAccountCredentials
+import pandas as pd
+
+def get_sheet_data():
+    # Define the scope
+    scope = ['https://spreadsheets.google.com/feeds',
+             'https://www.googleapis.com/auth/drive']
+    
+    # Add credentials to the account
+    creds_path = 'path/to/your-service-account-credentials.json'  # Update this
+    creds = ServiceAccountCredentials.from_json_keyfile_name(creds_path, scope)
+    
+    # Authorize the clientsheet
+    client = gspread.authorize(creds)
+    
+    # Get the sheet instance
+    sheet_id = 'your-google-sheet-id'  # Extract from the URL of your sheet
+    sheet = client.open_by_key(sheet_id)
+    
+    # Get specific worksheet
+    worksheet = sheet.worksheet('Sheet1')  # Change to your sheet name
+    
+    # Extract all data from the worksheet
+    data = worksheet.get_all_records()
+    
+    # Convert to pandas DataFrame
+    df = pd.DataFrame(data)
+    
+    return df
+
+# Replace your current file loading code with this
+# file_path = rf"{download_path}\Base Consolidada 2025.xlsx"
+# feedbacks_quinzenais = pd.read_excel(file_path, sheet_name='Forms Quinzenal de Projetos')
+
+feedbacks_quinzenais = get_sheet_data()
+
+
+## Security and Access Control Best Practices
+
+1. **Store credentials securely**: Never commit your credentials JSON file to version control
+2. **Use environment variables**: For production, store the path to credentials in environment variables
+3. **Limit service account permissions**: Only grant the minimum necessary access
+4. **Audit access regularly**: Check who has access to both the service account and sheet
+
+## Enhanced Code with Better Security
+
+import gspread
+from oauth2client.service_account import ServiceAccountCredentials
+import pandas as pd
+import os
+import json
+
+def get_sheet_data():
+    # Check for credentials in environment variable first
+    creds_json = os.environ.get('GOOGLE_SHEET_CREDS')
+    
+    if creds_json:
+        # Create temporary credentials file
+        creds = ServiceAccountCredentials.from_json_keyfile_dict(
+            json.loads(creds_json),
+            ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
+        )
+    else:
+        # Fall back to file-based credentials
+        creds_path = os.environ.get('GOOGLE_SHEET_CREDS_PATH', 'path/to/creds.json')
+        creds = ServiceAccountCredentials.from_json_keyfile_name(
+            creds_path,
+            ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
+        )
+    
+    # Authorize
+    client = gspread.authorize(creds)
+    
+    # Get sheet by ID (from environment or hardcoded)
+    sheet_id = os.environ.get('GOOGLE_SHEET_ID', 'your-google-sheet-id')
+    sheet = client.open_by_key(sheet_id)
+    
+    # Get worksheet
+    worksheet_name = os.environ.get('GOOGLE_WORKSHEET_NAME', 'Forms Quinzenal de Projetos')
+    worksheet = sheet.worksheet(worksheet_name)
+    
+    # Get data as DataFrame
+    return pd.DataFrame(worksheet.get_all_records())
+
+# Use the function instead of file loading
+feedbacks_quinzenais = get_sheet_data()
+
+
+This approach eliminates the need to download files and gives you real-time access to the latest data in your Google Sheet.
